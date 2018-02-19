@@ -1,0 +1,13 @@
+.Square {
+  width: 10px;
+  height: 10px;
+  background: #FFF;
+  outline: 1px solid #000; }
+  .Square:hover {
+    background: #AABBFF; }
+
+.On {
+  background: #AABBFF; }
+
+.Off {
+  background: #FFF; }
