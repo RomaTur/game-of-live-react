@@ -9,25 +9,20 @@ class App extends Component {
     super()
     this.intervalId = 0
     this.speed = 100
-    this.cols = 20
-    this.rows = 20
     this.state = {
       isPlaying: false,
       flag: true,
       generation: 0,
       speed: this.speed,
-      cols: this.cols,
-      rows: this.rows,
-      fullGrid: Array(this.rows).fill([]).map(() => Array(this.cols).fill(false))
+      cols: 20,
+      rows: 20,
+      fullGrid: Array(20).fill([]).map(() => Array(20).fill(false))
     }
     this.selectSquare = this.selectSquare.bind(this)
-    this.random = this.random.bind(this)
   }
 
   componentDidMount() {
     this.random()
-    document.querySelector('.input__play').value = 'Start'
-    // this.playButton()
   }
 
   setCols(val) {
@@ -54,9 +49,14 @@ class App extends Component {
 
   clear = () => {
     clearInterval(this.intervalId)
+    document.querySelector('.input__button--play').value = 'Start'
+    document.querySelectorAll('.input__field').forEach(elem => {
+      elem.disabled = false
+    })
     this.setState({
       generation: 0,
-      fullGrid: Array(this.state.rows).fill([]).map(() => Array(this.state.cols).fill(false))
+      fullGrid: Array(this.state.rows).fill([]).map(() => Array(this.state.cols).fill(false)),
+      isPlaying: false
     })
   }
 
@@ -72,7 +72,6 @@ class App extends Component {
   random = () => {
     this.clear()
     this.props.randomGrid(this.state.fullGrid, this.state.rows, this.state.cols)
-    console.log(this.props)
     if (this.state.flag) {
       this.setState({
         fullGrid: Array(this.state.rows).fill([]).map(() => Array(this.state.cols).fill(false)),
@@ -100,12 +99,18 @@ class App extends Component {
         isPlaying: false
       })
       el.target.value = 'Start'
+      document.querySelectorAll('.input__field').forEach(elem => {
+        elem.disabled = false
+      })
     } else {
       this.intervalId = setInterval(this.play, this.speed)
       this.setState({
         isPlaying: true
       })
       el.target.value = 'Stop'
+      document.querySelectorAll('.input__field').forEach(elem => {
+      elem.disabled = true
+      })
     }
   }
 

@@ -1,36 +1,31 @@
+$color-hover: #77E
+$color-white: #ffffff
 
 .App-header
   background-color: #222
   padding: 20px
   color: white
   width: 100%
-
-.App-logo
-  animation: App-logo-spin infinite 20s linear
-  height: 100px
+  font-family: 'Comic Sans MS', cursive
 
 .App-title
-  font-size: 1.5em
-
-.App-intro
-  font-size: large
-
-@keyframes App-logo-spin
-  from { transform: rotate(0deg)}
-  to { transform: rotate(360deg)}
+  font-size: 1.2em
 
 .inputs
   width: 100%
   display: flex
   justify-content: center
-  align-items: center
+  margin: 30px 0
+  // align-items: center
 
 .input
+  font-family: 'Comic Sans MS', cursive
   &__label
     margin-right: 30px
     display: flex
     flex-direction: column
     align-items: center
+    justify-content: center
     &:last-child
       margin-right: 0
   &__title
@@ -40,7 +35,33 @@
     border: 0
     border-radius: 4px
     width: 70px
-    height: 30px
-    padding: 5px
+    padding: 5px 0 5px 10px
     font-size: 18px
     text-align: center
+    font-family: 'Comic Sans MS', cursive 
+    border: 2px solid transparent
+    &:focus, &:active
+      outline: 0
+      outline-offset: 0   
+      border: 2px solid $color-hover
+  &__button
+    font-family: 'Comic Sans MS', cursive
+    color: $color-white
+    font-size: 16px
+    // height: 40px
+    width: 100px
+    // height: auto
+    border: 0
+    background: $color-hover
+    margin-bottom: 5px
+    border-radius: 4px
+    transition: 0.3s
+    &:focus, &:active
+      outline: 0
+      outline-offset: 0
+    &:hover
+      background: darken($color-hover, 10%)
+    &:last-child
+      margin-bottom: 0
+    &--play
+      // height: 70px
