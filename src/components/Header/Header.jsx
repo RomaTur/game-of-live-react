@@ -8,7 +8,7 @@ class Header extends Component {
   render() {
     return (
       <header className='App-header'>
-        <h1 className='App-title'>Выберите размер поля и нажмите "Start"</h1>
+        <h1 className='App-title'>Выберите размер поля, нажмите "Random" или выберите ячейку и нажмите "Start"</h1>
         <div className='inputs'>
           <div className='input__label'>
             <span className='input__title'>Rows</span>
