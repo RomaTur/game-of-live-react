@@ -40,8 +40,4 @@ npm run server
 ```
 
 > открой в браузере [http://localhost:3009](http://localhost:3009)
-<<<<<<< HEAD
 ---
-=======
----
->>>>>>> dev
