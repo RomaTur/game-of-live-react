@@ -1,10 +1,8 @@
 # Game of Live
 
-Реализация Conway's Game of Life на React
+## Реализация Conway's Game of Life на React
 
-<h2 align='center'>
-<a href='http://romatur.xyz:2222' target='_blank'>Пример</a>
-</h2>
+## [Пример](http://romatur.xyz:2222)
 
 ---
 
@@ -42,4 +40,8 @@ npm run server
 ```
 
 > открой в браузере [http://localhost:3009](http://localhost:3009)
+<<<<<<< HEAD
 ---
+=======
+---
+>>>>>>> dev
