@@ -6,16 +6,19 @@ import Row from './Row'
 class Playground extends Component {
   constructor(props) {
     super(props)
+    // определим размер игрового поля
     this.state = {
       playgroundWidth: window.innerWidth - Math.round(window.innerWidth / 2)
     }
   }
 
+  /*
+    - в зависимости от размера игрового поля, изменяем размер ячейки
+    - создаем и выводим массив строк с количеством колонок в качестве параметра
+  */
   render() {
     const rowsArr = []
-    // const squareWidth = (this.props.rows < this.props.cols) ? Math.round(this.playgroundWidth / this.props.cols) - 1 : Math.round(this.playgroundWidth / this.props.rows) - 1
     const squareWidth = Math.round(this.state.playgroundWidth / this.props.cols)
-    // console.log(this.props.fullGrid)
 
     for (let i = 0; i < this.props.rows; i++) {
       rowsArr.push(

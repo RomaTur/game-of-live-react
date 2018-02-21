@@ -4,21 +4,10 @@ import './Playground.css'
 
 
 class Row extends Component {
-  // constructor(props) {
-  //   super(props)
-  //   this.state = {
-  //     playgroundWidth: window.innerWidth - Math.round(window.innerWidth / 2)
-  //   }
-  // }
-
-  // componentDidMount() {
-  //   const newPlaygroundWidth = this.state.playgroundWidth + 30
-
-  //   this.setState({
-  //     playgroundWidth: newPlaygroundWidth
-  //   })
-  // }
-
+  /*
+    - в зависимости от значения ячейки присуждаем тот или иной css класс
+    - создаем и выводим массив ячеек
+  */
   render() {
     const colsArr = []
     let squareClass = 'Square off'

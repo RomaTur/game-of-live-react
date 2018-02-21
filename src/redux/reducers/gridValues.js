@@ -1,5 +1,5 @@
 import { RANDOM_GRID, PLAY, CHANGE_SQUARE } from '../actions'
-
+//  определяем начальное состояние
 const initialState = {
   generation: 0,
   speed: this.speed,
@@ -7,12 +7,12 @@ const initialState = {
   rows: 20,
   fullGrid: Array(20).fill([]).map(() => Array(20).fill(false))
 }
-
+//  команда изменения одной ячейки
 const changeSquare = (row, col, grid) => {
   grid[row][col] = !grid[row][col]
   return grid
 }
-
+// создание рандомного поля
 const random = (rows, cols) => {
   const randomGrid = Array(rows).fill([]).map(() => Array(cols).fill(false))
 
@@ -26,10 +26,12 @@ const random = (rows, cols) => {
   }
   return randomGrid
 }
-
+//  вычисление одной итерации по алгоритму
+//  подробнее - https://ru.wikipedia.org/wiki/%D0%98%D0%B3%D1%80%D0%B0_%C2%AB%D0%96%D0%B8%D0%B7%D0%BD%D1%8C%C2%BB
 const play = (rows, cols, grid) => {
   const g = grid
   const g2 = grid
+  let equal = true
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
@@ -43,11 +45,18 @@ const play = (rows, cols, grid) => {
       if (i < rows - 1) if (g[i + 1][j]) count++
       if (i < rows - 1 && j > 0) if (g[i + 1][j - 1]) count++
       if (i < rows - 1 && cols - 1) if (g[i + 1][j + 1]) count++
-      if (g[i][j] && (count < 2 || count > 3)) g2[i][j] = false
-      if (!g[i][j] && count === 3) g2[i][j] = true
+      if (g[i][j] && (count < 2 || count > 3)) {
+        g2[i][j] = false
+        equal = false
+      }
+      if (!g[i][j] && count === 3) {
+        g2[i][j] = true
+        equal = false
+      }
     }
   }
-  return g2
+  //  если текущее поколение идентично с предыдущим, то возвращаем null
+  return (equal) ? null : g2
 }
 
 const gridValues = (state = initialState, action) => {

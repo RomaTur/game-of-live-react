@@ -1,3 +1,4 @@
+//  определили названия доступных действий
 export const RANDOM_GRID = 'RANDOM_GRID'
 
 export const randomGrid = () => ({

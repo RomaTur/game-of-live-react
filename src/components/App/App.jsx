@@ -5,6 +5,7 @@ import Playground from '../Playground'
 import Header from '../Header'
 
 class App extends Component {
+  //  определяем внутреннее хранилище
   constructor() {
     super()
     this.intervalId = 0
@@ -21,10 +22,20 @@ class App extends Component {
     this.selectSquare = this.selectSquare.bind(this)
   }
 
+  //  сначала опустошаем массив ячеек
   componentDidMount() {
     this.random()
   }
 
+  /*
+    Функции:
+    - setCols, setRows - изменяем кол-во колонок, строк соответственно
+    - clear - останавливаем "игру" и очищаем поле
+    - selectSquare - меняем значение ячейки по нажатию на нее
+    - random - останавливаем "игру" и определяем рандомные значения ячейкам
+    - play - одна итерация рассчета "поколения"
+    - playButton - начинаем/останавливаем "игру"
+  */
   setCols(val) {
     let cols = parseInt(val.target.value, 10)
 
@@ -49,7 +60,11 @@ class App extends Component {
 
   clear = () => {
     clearInterval(this.intervalId)
-    document.querySelector('.input__button--play').value = 'Start'
+    const playButton = document.querySelector('.input__button--play')
+
+    playButton.style.opacity = '1'
+    playButton.value = 'Start'
+    playButton.disabled = false
     document.querySelectorAll('.input__field').forEach(elem => {
       elem.disabled = false
     })
@@ -61,8 +76,8 @@ class App extends Component {
   }
 
   selectSquare(row, col) {
+    //  отправляем в redux какую ячейку поменять
     this.props.changeSquare(this.state.fullGrid, row, col)
-
     this.setState({
       fullGrid: this.props.grid.fullGrid
     })
@@ -71,7 +86,9 @@ class App extends Component {
 
   random = () => {
     this.clear()
+    //  отправляем в redux случайное расположение ячеек
     this.props.randomGrid(this.state.fullGrid, this.state.rows, this.state.cols)
+    // изначально в redux нет массива, поэтому при инициализации создаем пустой массив, далее берем из redux
     if (this.state.flag) {
       this.setState({
         fullGrid: Array(this.state.rows).fill([]).map(() => Array(this.state.cols).fill(false)),
@@ -85,14 +102,33 @@ class App extends Component {
   }
 
   play = () => {
+    // отправляем в redux текущее состояние поля
     this.props.play(this.state.fullGrid, this.state.rows, this.state.cols)
-    this.setState({
-      fullGrid: this.props.grid.fullGrid,
-      generation: this.state.generation + 1
-    })
+    //  если из redux вернулся null, значит текущая итерация идентична предыдущей
+    // останавливаем "игру", иначе
+    //  присваиваем новый массив и увеличиваем поколение
+    if (this.props.grid.fullGrid === null) {
+      clearInterval(this.intervalId)
+      this.setState({
+        isPlaying: false
+      })
+      const playButton = document.querySelector('.input__button--play')
+
+      playButton.style.opacity = '0.7'
+      playButton.value = 'Start'
+      playButton.disabled = true
+    } else if (this.state.isPlaying) {
+      this.setState({
+        fullGrid: this.props.grid.fullGrid,
+        generation: this.state.generation + 1
+      })
+    }
   }
 
   playButton = (el) => {
+    //  нажатие на кнопку start/stop:
+    //  если идет итерация, то остановить "игру"
+    //  иначе начать "игру"
     if (this.state.isPlaying) {
       clearInterval(this.intervalId)
       this.setState({
@@ -109,11 +145,12 @@ class App extends Component {
       })
       el.target.value = 'Stop'
       document.querySelectorAll('.input__field').forEach(elem => {
-      elem.disabled = true
+        elem.disabled = true
       })
     }
   }
 
+  //  отрендерить все это дело
   render() {
     return (
       <div className='App'>
@@ -138,7 +175,7 @@ class App extends Component {
   }
 }
 
-
+//  связываем все функции работы с массивом с redux
 export default connect(
   state => ({
     grid: state
