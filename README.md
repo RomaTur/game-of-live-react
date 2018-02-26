@@ -11,7 +11,7 @@
 Склонируй репу
 
 ``` bash
-git clone https://github.com/RomaTur/game-of-live-react.git -b dev
+git clone https://github.com/RomaTur/game-of-live-react.git -b dev-no-redux
 ```
 
 `Не забудь` установить зависимости
