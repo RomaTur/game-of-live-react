@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import './App.css'
 import Playground from '../Playground'
 import Header from '../Header'
@@ -12,7 +11,6 @@ class App extends Component {
     this.speed = 100
     this.state = {
       isPlaying: false,
-      flag: true,
       generation: 0,
       speed: this.speed,
       cols: 20,
@@ -76,38 +74,69 @@ class App extends Component {
   }
 
   selectSquare(row, col) {
-    //  отправляем в redux какую ячейку поменять
-    this.props.changeSquare(this.state.fullGrid, row, col)
+    const newGrid = cloneArr(this.state.fullGrid)
+
+    newGrid[row][col] = !newGrid[row][col]
     this.setState({
-      fullGrid: this.props.grid.fullGrid
+      fullGrid: newGrid
     })
   }
 
 
   random = () => {
     this.clear()
-    //  отправляем в redux случайное расположение ячеек
-    this.props.randomGrid(this.state.fullGrid, this.state.rows, this.state.cols)
-    // изначально в redux нет массива, поэтому при инициализации создаем пустой массив, далее берем из redux
-    if (this.state.flag) {
-      this.setState({
-        fullGrid: Array(this.state.rows).fill([]).map(() => Array(this.state.cols).fill(false)),
-        flag: false
-      })
-    } else {
-      this.setState({
-        fullGrid: this.props.grid.fullGrid
-      })
+
+    const rows = this.state.rows
+    const cols = this.state.cols
+    const randomGrid = Array(rows).fill([]).map(() => Array(cols).fill(false))
+
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        if (Math.floor(Math.random() * 4) === 1) {
+          randomGrid[i][j] = true
+        }
+      }
     }
+    this.setState({
+      fullGrid: randomGrid
+    })
   }
 
   play = () => {
-    // отправляем в redux текущее состояние поля
-    this.props.play(this.state.fullGrid, this.state.rows, this.state.cols)
-    //  если из redux вернулся null, значит текущая итерация идентична предыдущей
-    // останавливаем "игру", иначе
+    //  вычисление одной итерации по алгоритму
+    //  подробнее - https://ru.wikipedia.org/wiki/%D0%98%D0%B3%D1%80%D0%B0_%C2%AB%D0%96%D0%B8%D0%B7%D0%BD%D1%8C%C2%BB
+    const cols = this.state.cols
+    const rows = this.state.rows
+    const g = this.state.fullGrid
+    const g2 = cloneArr(this.state.fullGrid)
+    let equal = true
+
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        let count = 0
+
+        if (i > 0) if (g[i - 1][j]) count++
+        if (i > 0 && j > 0) if (g[i - 1][j - 1]) count++
+        if (i > 0 && j < cols - 1) if (g[i - 1][j + 1]) count++
+        if (j < cols - 1) if (g[i][j + 1]) count++
+        if (j > 0) if (g[i][j - 1]) count++
+        if (i < rows - 1) if (g[i + 1][j]) count++
+        if (i < rows - 1 && j > 0) if (g[i + 1][j - 1]) count++
+        if (i < rows - 1 && cols - 1) if (g[i + 1][j + 1]) count++
+        if (g[i][j] && (count < 2 || count > 3)) {
+          g2[i][j] = false
+          equal = false
+        }
+        if (!g[i][j] && count === 3) {
+          g2[i][j] = true
+          equal = false
+        }
+      }
+    }
+    //  если текущее поколение идентично с предыдущим, то
+    //  останавливаем "игру", иначе
     //  присваиваем новый массив и увеличиваем поколение
-    if (this.props.grid.fullGrid === null) {
+    if (equal) {
       clearInterval(this.intervalId)
       this.setState({
         isPlaying: false
@@ -117,9 +146,9 @@ class App extends Component {
       playButton.style.opacity = '0.7'
       playButton.value = 'Start'
       playButton.disabled = true
-    } else if (this.state.isPlaying) {
+    } else {
       this.setState({
-        fullGrid: this.props.grid.fullGrid,
+        fullGrid: g2,
         generation: this.state.generation + 1
       })
     }
@@ -175,35 +204,8 @@ class App extends Component {
   }
 }
 
-//  связываем все функции работы с массивом с redux
-export default connect(
-  state => ({
-    grid: state
-  }),
-  dispatch => ({
-    randomGrid: (allGrid, rowsVar, colsVar) => {
-      dispatch({
-        type: 'RANDOM_GRID',
-        fullGrid: allGrid,
-        rows: rowsVar,
-        cols: colsVar
-      })
-    },
-    play: (allGrid, rowsVar, colsVar) => {
-      dispatch({
-        type: 'PLAY',
-        fullGrid: allGrid,
-        rows: rowsVar,
-        cols: colsVar
-      })
-    },
-    changeSquare: (allGrid, rowVar, colVar) => {
-      dispatch({
-        type: 'CHANGE_SQUARE',
-        fullGrid: allGrid,
-        row: rowVar,
-        col: colVar
-      })
-    }
-  })
-)(App)
+function cloneArr(arr) {
+  return JSON.parse(JSON.stringify(arr))
+}
+
+export default App
